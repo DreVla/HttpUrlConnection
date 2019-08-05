@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     jsonArray = new JSONArray(s);
                     listElements = new ArrayList<>();
                     Employee employee;
-                    int jsonArraySize = jsonArray.length() - 1;
+                    int jsonArraySize = jsonArray.length();
                     for (int i = jsonArraySize - 10; i < jsonArraySize; i++) {
                         employee = new Gson().fromJson(jsonArray.get(i).toString(), Employee.class);
                         listElements.add(employee);
@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         new RequestAsync().execute();
-
         getAllList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override

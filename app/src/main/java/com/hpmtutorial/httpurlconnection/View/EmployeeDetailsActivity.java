@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,7 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
     private EditText editTextName, editTextSalary, editTextAge;
     private JSONObject jsonObject;
     private int idToFind;
+    private String editedName,editedAge,editedSalary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,17 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
     }
 
     public void executeUpdateEmployee(View view) {
+        editedName = editTextName.getText().toString();
+        editedAge = editTextAge.getText().toString();
+        editedSalary = editTextSalary.getText().toString();
         editTextName.setEnabled(false);
         editTextAge.setEnabled(false);
         editTextSalary.setEnabled(false);
+        new RequestAsyncUpdate().execute();
+    }
+
+    public void deleteEmployee(View view) {
+        new RequestAsyncDelete().execute();
     }
 
     public class RequestAsync extends AsyncTask<String, String, String> {
@@ -53,7 +63,7 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             try {
                 //GET Request
-                return RequestHandler.sendGet("	http://dummy.restapiexample.com/api/v1/employee/" + idToFind);
+                return RequestHandler.sendGet("http://dummy.restapiexample.com/api/v1/employee/" + idToFind);
             } catch (Exception e) {
                 return "Exception: " + e.getMessage();
             }
@@ -73,6 +83,52 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public class RequestAsyncDelete extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                //GET Request
+                return RequestHandler.sendDelete("http://dummy.restapiexample.com/api/v1/delete/" + idToFind);
+            } catch (Exception e) {
+                return "Exception: " + e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.equals("200")) {
+                Toast.makeText(EmployeeDetailsActivity.this, "Success", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(EmployeeDetailsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public class RequestAsyncUpdate extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                //PUT Request
+                JSONObject putDataParams = new JSONObject();
+                putDataParams.put("name", editedName);
+                putDataParams.put("salary", editedSalary);
+                putDataParams.put("age", editedAge);
+                return RequestHandler.sendPut("http://dummy.restapiexample.com/api/v1/update/" + idToFind, putDataParams);
+            } catch (Exception e) {
+                return "Exception: " + e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.equals("200")) {
+                Toast.makeText(EmployeeDetailsActivity.this, "Success", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(EmployeeDetailsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }

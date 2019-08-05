@@ -35,6 +35,9 @@ public class AddEmployeeActivity extends AppCompatActivity {
         newEmployeeSalary = salaryEditText.getText().toString();
         newEmployeeAge = ageEditText.getText().toString();
         new RequestAsync().execute();
+        nameEditText.setText("");
+        salaryEditText.setText("");
+        ageEditText.setText("");
     }
 
     public class RequestAsync extends AsyncTask<String, String, String> {

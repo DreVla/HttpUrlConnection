@@ -10,9 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -71,5 +69,36 @@ public class RequestHandler {
         } else {
             return "";
         }
+    }
+
+    public static String sendDelete(String url) throws IOException {
+        URL obj = new URL(url);
+        HttpURLConnection httpCon = (HttpURLConnection) obj.openConnection();
+        httpCon.setDoOutput(true);
+        httpCon.setRequestProperty(
+                "Content-Type", "application/json; utf-8");
+        httpCon.setRequestMethod("DELETE");
+        httpCon.connect();
+        return String.valueOf(httpCon.getResponseCode());
+    }
+
+    public static String sendPut(String url, JSONObject putData) throws IOException {
+        URL obj = new URL(url);
+        HttpURLConnection httpCon = (HttpURLConnection) obj.openConnection();
+        httpCon.setDoOutput(true);
+        httpCon.setRequestProperty(
+                "Content-Type", "application/json; utf-8");
+        httpCon.setReadTimeout(20000);
+        httpCon.setConnectTimeout(20000);
+        httpCon.setRequestMethod("PUT");
+
+        String jsonInputString = putData.toString();
+
+        OutputStreamWriter out = new OutputStreamWriter(
+                httpCon.getOutputStream());
+        out.write(jsonInputString);
+        out.close();
+        httpCon.getInputStream();
+        return String.valueOf(httpCon.getResponseCode());
     }
 }
